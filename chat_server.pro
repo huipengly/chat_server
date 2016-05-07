@@ -9,4 +9,8 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    my_tcp_server.cpp
+
+HEADERS += \
+    my_tcp_server.h
