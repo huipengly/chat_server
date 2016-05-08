@@ -34,8 +34,8 @@ void my_tcp_server::acceptConnection()
     clientSock = serverSock->nextPendingConnection();
 
     qDebug() << QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss") << "  "
-             << "客户端ip:"  << clientSock->localAddress().toString()
-             << ",port:"  << QString::number(clientSock->localPort(), 10)
+             << "客户端ip:"  << clientSock->peerAddress().toString()
+             << ",port:"  << QString::number(clientSock->peerPort(), 10)
              << "连接到服务器";
 
     //客户端触发
@@ -54,8 +54,8 @@ void my_tcp_server::receiveData()
 
         //接收的信息输出在屏幕上
         qDebug() << QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss") << "  "
-                 << "客户端ip:" << clientSock->localAddress().toString()
-                 << ",port:"   << QString::number(clientSock->localPort(), 10)
+                 << "客户端ip:" << clientSock->peerAddress().toString()
+                 << ",port:"   << QString::number(clientSock->peerPort(), 10)
                  << "收到:" << msg;
 
         if(clientSock != NULL)
@@ -70,8 +70,8 @@ void my_tcp_server::receiveData()
                 clientSock->write(login_re.toLocal8Bit());//反馈给客户端登录是否成功
                 //反馈的信息输出在屏幕上
                 qDebug() << QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss") << "  "
-                         << "服务端ip:" << clientSock->localAddress().toString()
-                         << ",port:"   << QString::number(clientSock->localPort(), 10)
+                         << "服务端ip:" << clientSock->peerAddress().toString()
+                         << ",port:"   << QString::number(clientSock->peerPort(), 10)
                          << "发送:" << login_re;
                 login_re = "false";//重置登录验证状态
             }
@@ -79,8 +79,8 @@ void my_tcp_server::receiveData()
         else
         {
             qDebug() << QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss") << "  "
-                     << "客户端ip:" << clientSock->localAddress().toString()
-                     << ",port:"   << QString::number(clientSock->localPort(), 10)
+                     << "客户端ip:" << clientSock->peerAddress().toString()
+                     << ",port:"   << QString::number(clientSock->peerPort(), 10)
                      << "断开连接";
         }
     }
@@ -90,8 +90,8 @@ void my_tcp_server::disConnection()
 {
     //输出断开信息
     qDebug() << QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss") << "  "
-             << "客户端ip:" << clientSock->localAddress().toString()
-             << ",port:"   << QString::number(clientSock->localPort(), 10)
+             << "客户端ip:" << clientSock->peerAddress().toString()
+             << ",port:"   << QString::number(clientSock->peerPort(), 10)
              << "断开连接";
     clientSock->deleteLater();
     clientSock = NULL;
