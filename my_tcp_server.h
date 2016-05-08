@@ -2,11 +2,11 @@
 #define MY_TCP_SERVER_H
 
 #include <QtNetwork>
+#include <vector>
 
 class my_tcp_server : public QObject
 {
     Q_OBJECT
-
     QTcpServer *serverSock;
     QTcpSocket *clientSock;
 

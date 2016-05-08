@@ -5,11 +5,21 @@
 
 using namespace std;
 
+bool is_admin_online;
+bool is_test_online;
+QString admin_ip;
+QString test_ip;
+
 my_tcp_server::my_tcp_server(QObject *parent)
     : QObject( parent )
 {
     serverSock = new QTcpServer(this);
     clientSock = NULL;
+
+    is_admin_online = false;
+    is_test_online = false;
+//    is_admin_online = 0;
+//    is_test_online = 0;
 
     if(!serverSock->listen(QHostAddress::Any,32146))
     {
@@ -60,20 +70,56 @@ void my_tcp_server::receiveData()
 
         if(clientSock != NULL)
         {
-            QString login_re = "false";
-            if(!login_re.isEmpty())
+            QString state_return = "false";
+            if(!state_return.isEmpty())
             {
-                if(msg == "admin#admin" || msg == "test#test")//判定用户名密码是否正确
+                if(msg == "admin#admin" )//判定用户名密码是否正确
                 {
-                    login_re = "true";
+                    if(is_admin_online == false)
+                    {
+//                        if(is_test_online == false)
+//                            state_return = "true";
+//                        else
+//                            state_return = "true&";
+                        state_return = "true";
+                        is_admin_online = true;
+                        admin_ip = clientSock->peerAddress().toString();
+                    }
                 }
-                clientSock->write(login_re.toLocal8Bit());//反馈给客户端登录是否成功
+                if(msg == "test#test")
+                {
+                    if(is_test_online == false)
+                    {
+//                        if(is_admin_online == false)
+//                            state_return = "true";
+//                        else
+//                            state_return = "true&";
+                        state_return = "true";
+                        is_test_online = true;
+                        test_ip = clientSock->peerAddress().toString();
+                    }
+                }
+                if(msg == "is_admin_online")
+                {
+                    if(is_admin_online == true)
+                    {
+                        state_return = "IP:"+admin_ip;
+                    }
+                }
+                if(msg == "is_test_online")
+                {
+                    if(is_test_online == true)
+                    {
+                        state_return = "IP:"+test_ip;
+                    }
+                }
+                clientSock->write(state_return.toLocal8Bit());//反馈给客户端登录是否成功
                 //反馈的信息输出在屏幕上
                 qDebug() << QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss") << "  "
                          << "服务端ip:" << clientSock->peerAddress().toString()
                          << ",port:"   << QString::number(clientSock->peerPort(), 10)
-                         << "发送:" << login_re;
-                login_re = "false";//重置登录验证状态
+                         << "发送:" << state_return;
+                state_return = "false";//重置登录验证状态
             }
         }
         else
